@@ -2,6 +2,8 @@ package com.example.bakingapp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.example.bakingapp.data.DataService;
@@ -9,6 +11,8 @@ import com.example.bakingapp.data.Recipe;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,10 +23,24 @@ public class MainActivity extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    @BindView(R.id.recipes_recycler_view)
+    RecyclerView mRecyclerView;
+
+    RecipesAdapter mRecipesAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.setDebug(true);
+        ButterKnife.bind(this);
+
+
+        mRecipesAdapter = new RecipesAdapter(this, null);
+
+        GridLayoutManager manager = new GridLayoutManager(this, 2);
+        mRecyclerView.setLayoutManager(manager);
+        mRecyclerView.setAdapter(mRecipesAdapter);
 
         //Fetching data with the Retrofit Library
         Retrofit retrofit = new Retrofit.Builder()
@@ -36,8 +54,10 @@ public class MainActivity extends AppCompatActivity {
         recipeCall.enqueue(new Callback<List<Recipe>>() {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-                List<Recipe> recipeList = response.body();
-                Log.d(LOG_TAG, "Got " + String.valueOf(recipeList.size()) + " recipes");
+                if (response.isSuccessful()) {
+                    List<Recipe> recipeList = response.body();
+                    mRecipesAdapter.swapList(recipeList);
+                }
             }
 
             @Override
