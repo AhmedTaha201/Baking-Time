@@ -25,10 +25,12 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
 
     private Context mContext;
     private List<Recipe> mRecipeList;
+    private RecipeListClickListener mClickListener;
 
-    public RecipesAdapter(Context mContext, List<Recipe> mRecipeList) {
+    public RecipesAdapter(Context mContext, List<Recipe> mRecipeList, RecipeListClickListener mClickListener) {
         this.mContext = mContext;
         this.mRecipeList = mRecipeList;
+        this.mClickListener = mClickListener;
     }
 
     @NonNull
@@ -68,7 +70,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         return mRecipeList != null ? mRecipeList.size() : 0;
     }
 
-    class RecipeViewHolder extends RecyclerView.ViewHolder {
+    class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.recipe_image)
         ImageView recipeImageView;
 
@@ -78,8 +80,14 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         private RecipeViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            mClickListener.onRecipeCLicked(position);
+        }
     }
 
     public void swapList(List<Recipe> recipeList) {
@@ -87,6 +95,11 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
             mRecipeList = recipeList;
             notifyDataSetChanged();
         }
+    }
+
+    //Click listener interface
+    public interface RecipeListClickListener {
+        void onRecipeCLicked(int position);
     }
 
 }

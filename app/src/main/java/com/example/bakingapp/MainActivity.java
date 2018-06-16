@@ -1,5 +1,6 @@
 package com.example.bakingapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,7 +20,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecipesAdapter.RecipeListClickListener {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
 
     RecipesAdapter mRecipesAdapter;
+
+    List<Recipe> mRecipeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
 
-        mRecipesAdapter = new RecipesAdapter(this, null);
+        mRecipesAdapter = new RecipesAdapter(this, null, this);
 
         GridLayoutManager manager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(manager);
@@ -55,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
                 if (response.isSuccessful()) {
-                    List<Recipe> recipeList = response.body();
-                    mRecipesAdapter.swapList(recipeList);
+                    mRecipeList = response.body();
+                    mRecipesAdapter.swapList(mRecipeList);
                 }
             }
 
@@ -67,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onRecipeCLicked(int position) {
+        Intent recipeIntent = new Intent(this, RecipeActivity.class);
+        recipeIntent.putExtra(RecipeActivity.RECIPE_EXTRA, mRecipeList.get(position));
+        startActivity(recipeIntent);
     }
 
     ;

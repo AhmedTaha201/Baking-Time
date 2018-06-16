@@ -2,4 +2,5 @@
     <string name="app_name">Baking App</string>
 
     <string name="recipe_name">%s (%d Persons)</string>
+    <string name="detail_steps_label">Steps</string>
 </resources>
