@@ -1,16 +1,18 @@
 package com.example.bakingapp;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.AttributeSet;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.bakingapp.adapters.StepAdapter;
 import com.example.bakingapp.data.Recipe;
 import com.google.android.flexbox.FlexboxLayout;
 
@@ -24,9 +26,10 @@ import fisk.chipcloud.ChipCloudConfig;
  * Created by Taha on 6/16/2018.
  */
 
-public class RecipeFragment extends Fragment {
+public class RecipeFragment extends Fragment implements StepAdapter.StepItemClickListener {
 
     private Recipe mRecipe;
+    StepAdapter mStepAdapter;
 
     public RecipeFragment() {
     }
@@ -37,6 +40,16 @@ public class RecipeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_recipe, container, false);
         final FlexboxLayout layout = rootView.findViewById(R.id.chips_group_layout);
         showIngridientChips(mRecipe.getIngredients(), layout);
+
+        List<Recipe.Step> steps = null;
+        if (mRecipe != null) {
+            steps = mRecipe.getSteps();
+        }
+        mStepAdapter = new StepAdapter(getActivity(), steps, this);
+
+        RecyclerView stepsRecyclerView = rootView.findViewById(R.id.steps_recycler_view);
+        stepsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        stepsRecyclerView.setAdapter(mStepAdapter);
         return rootView;
     }
 
@@ -63,4 +76,8 @@ public class RecipeFragment extends Fragment {
         chips.addChips(ingridientsList);
     }
 
+    @Override
+    public void onStepClick(int position) {
+        Log.d("RecipeFragment", "Step "  + String.valueOf(position) + " clicked!");
+    }
 }

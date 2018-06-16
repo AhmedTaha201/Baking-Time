@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.example.bakingapp.adapters.RecipesAdapter;
 import com.example.bakingapp.data.DataService;
 import com.example.bakingapp.data.Recipe;
 
