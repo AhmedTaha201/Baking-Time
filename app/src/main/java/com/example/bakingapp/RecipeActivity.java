@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -39,31 +40,18 @@ public class RecipeActivity extends AppCompatActivity {
         Intent recipeIntent = getIntent();
         if (recipeIntent != null && recipeIntent.hasExtra(RECIPE_EXTRA)) {
             mRecipe = recipeIntent.getParcelableExtra(RECIPE_EXTRA);
-            showIngridientChips(mRecipe.getIngredients());
             Log.e(LOG_TAG, "Got the recipe extra");
+
+            FragmentManager manager = getSupportFragmentManager();
+            RecipeFragment recipeFragment = new RecipeFragment();
+            recipeFragment.setRecipe(mRecipe);
+
+            manager.beginTransaction()
+                    .add(R.id.recipe_container, recipeFragment)
+                    .commit();
         } else {
             Log.e(LOG_TAG, "No extra recipe");
         }
     }
 
-    public void showIngridientChips(List<Recipe.Ingredient> ingredients) {
-        List<String> ingridientsList = new ArrayList<>();
-        for (Recipe.Ingredient i : ingredients) {
-            String ingridientString = i.getIngredient() ;//+ " (" + String.valueOf(i.getQuantity() + " " + i.getMeasure() + ")");
-            ingridientsList.add(ingridientString);
-        }
-
-        final FlexboxLayout layout = (FlexboxLayout) findViewById(R.id.chips_group_layout);
-
-        ChipCloudConfig config = new ChipCloudConfig()
-                .selectMode(ChipCloud.SelectMode.multi)
-                .useInsetPadding(true)
-                .checkedChipColor(Color.parseColor("#ddaa00"))
-                .checkedTextColor(Color.parseColor("#ffffff"))
-                .uncheckedChipColor(Color.parseColor("#efefef"))
-                .uncheckedTextColor(Color.parseColor("#666666"));
-
-        final ChipCloud chips = new ChipCloud(this, layout, config);
-        chips.addChips(ingridientsList);
-    }
 }
