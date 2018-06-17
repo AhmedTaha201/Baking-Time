@@ -50,6 +50,7 @@ public class RecipeFragment extends Fragment implements StepAdapter.StepItemClic
         RecyclerView stepsRecyclerView = rootView.findViewById(R.id.steps_recycler_view);
         stepsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         stepsRecyclerView.setAdapter(mStepAdapter);
+        stepsRecyclerView.setNestedScrollingEnabled(false);
         return rootView;
     }
 
