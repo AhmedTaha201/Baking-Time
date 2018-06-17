@@ -1,5 +1,6 @@
 package com.example.bakingapp;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,6 +31,7 @@ public class RecipeFragment extends Fragment implements StepAdapter.StepItemClic
 
     private Recipe mRecipe;
     StepAdapter mStepAdapter;
+    List<Recipe.Step> mSteps = null;
 
     public RecipeFragment() {
     }
@@ -41,11 +43,11 @@ public class RecipeFragment extends Fragment implements StepAdapter.StepItemClic
         final FlexboxLayout layout = rootView.findViewById(R.id.chips_group_layout);
         showIngridientChips(mRecipe.getIngredients(), layout);
 
-        List<Recipe.Step> steps = null;
+
         if (mRecipe != null) {
-            steps = mRecipe.getSteps();
+            mSteps = mRecipe.getSteps();
         }
-        mStepAdapter = new StepAdapter(getActivity(), steps, this);
+        mStepAdapter = new StepAdapter(getActivity(), mSteps, this);
 
         RecyclerView stepsRecyclerView = rootView.findViewById(R.id.steps_recycler_view);
         stepsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -79,6 +81,8 @@ public class RecipeFragment extends Fragment implements StepAdapter.StepItemClic
 
     @Override
     public void onStepClick(int position) {
-        Log.d("RecipeFragment", "Step "  + String.valueOf(position) + " clicked!");
+        Intent stepIntent = new Intent(getActivity(), StepActivity.class);
+        stepIntent.putExtra(StepActivity.STEP_EXTRA, mSteps.get(position));
+        startActivity(stepIntent);
     }
 }
