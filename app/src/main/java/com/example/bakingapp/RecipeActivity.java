@@ -1,24 +1,13 @@
 package com.example.bakingapp;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.example.bakingapp.data.Recipe;
-import com.google.android.flexbox.FlexboxLayout;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import fisk.chipcloud.ChipCloud;
-import fisk.chipcloud.ChipCloudConfig;
-import fisk.chipcloud.ChipListener;
 
 /**
  * Created by Taha on 6/14/2018.
@@ -29,8 +18,9 @@ public class RecipeActivity extends AppCompatActivity {
     public static final String LOG_TAG = RecipeActivity.class.getSimpleName();
 
     public static final String RECIPE_EXTRA = "recipe";
-
+    public static final String BUNDLE_KEY_RECIPE_FRAGMENT = "recipe_fragment_key";
     Recipe mRecipe;
+    RecipeFragment mRecipeFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,15 +33,29 @@ public class RecipeActivity extends AppCompatActivity {
             Log.e(LOG_TAG, "Got the recipe extra");
 
             FragmentManager manager = getSupportFragmentManager();
-            RecipeFragment recipeFragment = new RecipeFragment();
-            recipeFragment.setRecipe(mRecipe);
+            if (savedInstanceState == null) {
+                mRecipeFragment = new RecipeFragment();
+                mRecipeFragment.setRecipe(mRecipe);
 
-            manager.beginTransaction()
-                    .add(R.id.recipe_container, recipeFragment)
-                    .commit();
+                manager.beginTransaction()
+                        .add(R.id.recipe_container, mRecipeFragment)
+                        .commit();
+            } else if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_KEY_RECIPE_FRAGMENT)) {
+                mRecipeFragment = (RecipeFragment) manager.getFragment(savedInstanceState, BUNDLE_KEY_RECIPE_FRAGMENT);
+                mRecipeFragment.setRecipe(mRecipe);
+
+                manager.beginTransaction()
+                        .replace(R.id.recipe_container, mRecipeFragment)
+                        .commit();
+            }
         } else {
             Log.e(LOG_TAG, "No extra recipe");
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, BUNDLE_KEY_RECIPE_FRAGMENT, mRecipeFragment);
+    }
 }
