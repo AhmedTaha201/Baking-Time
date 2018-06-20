@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.example.bakingapp.data.Recipe;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -34,22 +33,18 @@ import butterknife.ButterKnife;
 
 public class StepFragment extends Fragment {
 
+    public static final String BUNDLE_KEY_POSITION = "position_key";
+    public static final String BUNDLE_KEY_PLAY_WHEN_READY = "play_key";
     Recipe.Step mStep;
     Uri mMediaUri;
-
     Bundle mSavedInstanceState = null;
-
     SimpleExoPlayer mPlayer;
-
     long mMediaPosition;
-    public static final String BUNDLE_KEY_POSITION = "position_key";
-
     boolean mPlayWhenReady;
-    public static final String BUNDLE_KEY_PLAY_WHEN_READY = "play_key";
-
     @BindView(R.id.media_view)
     SimpleExoPlayerView mPlayerView;
 
+    @Nullable //Available only in portrait mode
     @BindView(R.id.step_data)
     TextView mStepData;
 
@@ -72,7 +67,9 @@ public class StepFragment extends Fragment {
         ButterKnife.bind(this, view);
         if (mStep != null) {
             //Step description
-            mStepData.setText(mStep.getDescription());
+            if (mStepData != null) { //Present only in portrait mode
+                mStepData.setText(mStep.getDescription());
+            }
 
             mMediaUri = getMediaUri();
         }
