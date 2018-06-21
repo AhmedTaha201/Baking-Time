@@ -3,4 +3,6 @@
 
     <string name="recipe_name">%s (%d Persons)</string>
     <string name="detail_steps_label">Steps</string>
+    <string name="not_available">N/A</string>
+    <string name="widget_list_empty_view_string">No Available ingredients, Click a recipe in the app to show its ingredients here</string>
 </resources>

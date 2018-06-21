@@ -1,7 +1,11 @@
 package com.example.bakingapp;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,9 +14,12 @@ import android.util.Log;
 import com.example.bakingapp.adapters.RecipesAdapter;
 import com.example.bakingapp.data.DataService;
 import com.example.bakingapp.data.Recipe;
+import com.example.bakingapp.data.RecipeWidgetProvider;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +32,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements RecipesAdapter.RecipeListClickListener {
 
     public static final String BUNDLE_KEY_RECIPE_LIST = "recipe_list_key";
+    public static String SP_KEY_INGREDIENTS = "ingredients_key";
+    public static String SP_KEY_NAME = "name_key";
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.recipes_recycler_view)
     RecyclerView mRecyclerView;
@@ -79,6 +88,13 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Re
 
     @Override
     public void onRecipeCLicked(int position) {
+        saveIngredientsInPreferences(position);
+
+        //Update app widgets
+        AppWidgetManager manager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = manager.getAppWidgetIds(new ComponentName(this, RecipeWidgetProvider.class));
+        RecipeWidgetProvider.updateWidgets(this, manager, appWidgetIds);
+
         Intent recipeIntent = new Intent(this, RecipeActivity.class);
         recipeIntent.putExtra(RecipeActivity.RECIPE_EXTRA, mRecipeList.get(position));
         startActivity(recipeIntent);
@@ -88,5 +104,30 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Re
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(BUNDLE_KEY_RECIPE_LIST, (ArrayList<Recipe>) mRecipeList);
+    }
+
+    //A helper method to save the ingredients of the last clicked recipe into the sharedPreferences to show in the app widget
+    private void saveIngredientsInPreferences(int position) {
+        //Save the last clicked recipe ingredients in shared preferences
+        Recipe recipe = mRecipeList.get(position);
+        String name = recipe.getName();
+        Set<String> ingredientsSet = getIngredientsSet(recipe);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(SP_KEY_NAME, name).apply();
+        editor.putStringSet(SP_KEY_INGREDIENTS, ingredientsSet).apply();
+    }
+
+    //A helper method to get ingredients list in a set of strings to store in shared preferences
+    public Set<String> getIngredientsSet(Recipe recipe) {
+        //Turn the ingredients list into a set of strings
+        List<Recipe.Ingredient> ingredients = recipe.getIngredients();
+        Set<String> ingredientsSet = new HashSet<>();
+        for (Recipe.Ingredient i : ingredients) {
+            String ingredientString = i.getIngredient() + " (" + String.valueOf(i.getQuantity() + " " + i.getMeasure() + ")");
+            ingredientsSet.add(ingredientString);
+        }
+        return ingredientsSet;
     }
 }
