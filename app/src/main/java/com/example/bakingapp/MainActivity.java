@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Re
         //Update app widgets
         AppWidgetManager manager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = manager.getAppWidgetIds(new ComponentName(this, RecipeWidgetProvider.class));
+        manager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_recipe_ingredient_list);
         RecipeWidgetProvider.updateWidgets(this, manager, appWidgetIds);
 
         Intent recipeIntent = new Intent(this, RecipeActivity.class);
