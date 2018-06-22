@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Re
     RecipesAdapter mRecipesAdapter;
     List<Recipe> mRecipeList;
 
+    @Nullable
     SimpleIdlingResource mIdlingResource;
 
     @Override
@@ -139,6 +143,8 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Re
         return ingredientsSet;
     }
 
+    @VisibleForTesting
+    @NonNull
     public SimpleIdlingResource getIdlingResource() {
         if (mIdlingResource == null) {
             mIdlingResource = new SimpleIdlingResource();
