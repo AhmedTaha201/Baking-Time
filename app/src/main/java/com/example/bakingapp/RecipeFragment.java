@@ -43,7 +43,7 @@ public class RecipeFragment extends Fragment implements StepAdapter.StepItemClic
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe, container, false);
         final FlexboxLayout layout = rootView.findViewById(R.id.chips_group_layout);
-        showIngridientChips(mRecipe.getIngredients(), layout);
+        showIngredientChips(mRecipe.getIngredients(), layout);
 
 
         if (mRecipe != null) {
@@ -67,11 +67,11 @@ public class RecipeFragment extends Fragment implements StepAdapter.StepItemClic
     }
 
 
-    public void showIngridientChips(List<Recipe.Ingredient> ingredients, ViewGroup layout) {
-        List<String> ingridientsList = new ArrayList<>();
+    public void showIngredientChips(List<Recipe.Ingredient> ingredients, ViewGroup layout) {
+        List<String> ingredientsList = new ArrayList<>();
         for (Recipe.Ingredient i : ingredients) {
             String ingridientString = i.getIngredient();//+ " (" + String.valueOf(i.getQuantity() + " " + i.getMeasure() + ")");
-            ingridientsList.add(ingridientString);
+            ingredientsList.add(ingridientString);
         }
 
         ChipCloudConfig config = new ChipCloudConfig()
@@ -83,7 +83,7 @@ public class RecipeFragment extends Fragment implements StepAdapter.StepItemClic
                 .uncheckedTextColor(Color.parseColor("#666666"));
 
         ChipCloud chips = new ChipCloud(getActivity(), layout, config);
-        chips.addChips(ingridientsList);
+        chips.addChips(ingredientsList);
     }
 
     @Override
