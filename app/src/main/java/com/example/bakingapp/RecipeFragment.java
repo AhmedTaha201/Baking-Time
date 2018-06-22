@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +28,9 @@ import fisk.chipcloud.ChipCloudConfig;
 
 public class RecipeFragment extends Fragment implements StepAdapter.StepItemClickListener {
 
-    private Recipe mRecipe;
     StepAdapter mStepAdapter;
     List<Recipe.Step> mSteps = null;
+    private Recipe mRecipe;
 
     public RecipeFragment() {
     }
@@ -82,7 +81,9 @@ public class RecipeFragment extends Fragment implements StepAdapter.StepItemClic
     @Override
     public void onStepClick(int position) {
         Intent stepIntent = new Intent(getActivity(), StepActivity.class);
-        stepIntent.putExtra(StepActivity.STEP_EXTRA, mSteps.get(position));
+        //Passing the whole list of steps to support navigation
+        stepIntent.putParcelableArrayListExtra(StepActivity.STEP_LIST_EXTRA, (ArrayList<Recipe.Step>) mSteps);
+        stepIntent.putExtra(StepActivity.STEP_POSITION_EXTRA, position);
         startActivity(stepIntent);
     }
 }

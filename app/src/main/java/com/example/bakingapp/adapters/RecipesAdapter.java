@@ -50,10 +50,10 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
             Recipe recipe = mRecipeList.get(position);
             //Recipe image(if found)
             String imagePath = recipe.getImage();
-            if (imagePath != null && imagePath != "") {
-
+            if (imagePath == null && imagePath == "") {
+                imagePath = null;
                 Picasso.with(mContext)
-                        .load(recipe.getImage())
+                        .load(imagePath)
                         .error(R.drawable.food)
                         .placeholder(R.drawable.food)
                         .into(holder.recipeImageView);
@@ -69,6 +69,18 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
     @Override
     public int getItemCount() {
         return mRecipeList != null ? mRecipeList.size() : 0;
+    }
+
+    public void swapList(List<Recipe> recipeList) {
+        if (recipeList != null) {
+            mRecipeList = recipeList;
+            notifyDataSetChanged();
+        }
+    }
+
+    //Click listener interface
+    public interface RecipeListClickListener {
+        void onRecipeCLicked(int position);
     }
 
     class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -89,18 +101,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
             int position = getAdapterPosition();
             mClickListener.onRecipeCLicked(position);
         }
-    }
-
-    public void swapList(List<Recipe> recipeList) {
-        if (recipeList != null) {
-            mRecipeList = recipeList;
-            notifyDataSetChanged();
-        }
-    }
-
-    //Click listener interface
-    public interface RecipeListClickListener {
-        void onRecipeCLicked(int position);
     }
 
 }
