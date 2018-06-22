@@ -11,6 +11,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.example.bakingapp.IdlingResource.SimpleIdlingResource;
 import com.example.bakingapp.adapters.RecipesAdapter;
 import com.example.bakingapp.data.DataService;
 import com.example.bakingapp.data.Recipe;
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Re
     RecipesAdapter mRecipesAdapter;
     List<Recipe> mRecipeList;
 
+    SimpleIdlingResource mIdlingResource;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,12 +67,16 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Re
             DataService service = retrofit.create(DataService.class);
             Call<List<Recipe>> recipeCall = service.getRecipes();
 
+            //Set the IdlingState to false before enqueueing the call
+            getIdlingResource().setIdleState(false);
             recipeCall.enqueue(new Callback<List<Recipe>>() {
                 @Override
                 public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
                     if (response.isSuccessful()) {
                         mRecipeList = response.body();
                         mRecipesAdapter.swapList(mRecipeList);
+                        //It`s ok to start the UI test
+                        getIdlingResource().setIdleState(true);
                     }
                 }
 
@@ -130,5 +137,12 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.Re
             ingredientsSet.add(ingredientString);
         }
         return ingredientsSet;
+    }
+
+    public SimpleIdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
     }
 }
