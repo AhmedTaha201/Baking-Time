@@ -62,6 +62,10 @@ public class StepActivity extends AppCompatActivity {
             mMaxPosition = mStepList.size() - 1;
             mPosition = intent.getIntExtra(STEP_POSITION_EXTRA, 0);
 
+            //Set the title to be the recipe name in portrait mode only as the action bar is hidden in landscape mode
+            if (mPortrait && intent.hasExtra(RecipeFragment.RECIPE_NAME_EXTRA))
+                setTitle(intent.getStringExtra(RecipeFragment.RECIPE_NAME_EXTRA));
+
             mFragmentManager = getSupportFragmentManager();
             if (savedInstanceState != null && savedInstanceState.containsKey(FRAGMENT)) {
                 if (mPortrait) setupNavigation();

@@ -37,6 +37,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipeFragment.
         if (recipeIntent != null && recipeIntent.hasExtra(RECIPE_EXTRA)) {
             mRecipe = recipeIntent.getParcelableExtra(RECIPE_EXTRA);
             Log.e(LOG_TAG, "Got the recipe extra");
+            //Set recipe name
+            if (!mTwoPane) setTitle(mRecipe.getName());
 
             mFragmentManager = getSupportFragmentManager();
             if (savedInstanceState == null) {

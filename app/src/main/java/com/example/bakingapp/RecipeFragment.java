@@ -28,6 +28,7 @@ import fisk.chipcloud.ChipCloudConfig;
 
 public class RecipeFragment extends Fragment implements StepAdapter.StepItemClickListener {
 
+    public final static String RECIPE_NAME_EXTRA = "extra_name";
     StepAdapter mStepAdapter;
     List<Recipe.Step> mSteps = null;
     @Nullable
@@ -95,6 +96,7 @@ public class RecipeFragment extends Fragment implements StepAdapter.StepItemClic
             //Passing the whole list of steps to support navigation
             stepIntent.putParcelableArrayListExtra(StepActivity.STEP_LIST_EXTRA, (ArrayList<Recipe.Step>) mSteps);
             stepIntent.putExtra(StepActivity.STEP_POSITION_EXTRA, position);
+            stepIntent.putExtra(RECIPE_NAME_EXTRA, mRecipe.getName());
             startActivity(stepIntent);
         }
     }
