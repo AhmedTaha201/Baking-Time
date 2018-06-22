@@ -80,6 +80,11 @@ public class StepFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        if (mPlayer != null) {
+            mMediaPosition = mPlayer.getCurrentPosition();
+            mPlayWhenReady = mPlayer.getPlayWhenReady();
+        }
+
         outState.putLong(BUNDLE_KEY_POSITION, mMediaPosition);
         outState.putBoolean(BUNDLE_KEY_PLAY_WHEN_READY, mPlayWhenReady);
 

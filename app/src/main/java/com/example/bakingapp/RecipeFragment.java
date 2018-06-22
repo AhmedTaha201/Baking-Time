@@ -30,6 +30,8 @@ public class RecipeFragment extends Fragment implements StepAdapter.StepItemClic
 
     StepAdapter mStepAdapter;
     List<Recipe.Step> mSteps = null;
+    @Nullable
+    onFragmentStepClicked mCallback;
     private Recipe mRecipe;
 
     public RecipeFragment() {
@@ -59,6 +61,11 @@ public class RecipeFragment extends Fragment implements StepAdapter.StepItemClic
         this.mRecipe = mRecipe;
     }
 
+    public void setCallback(onFragmentStepClicked callback) {
+        this.mCallback = callback;
+    }
+
+
     public void showIngridientChips(List<Recipe.Ingredient> ingredients, ViewGroup layout) {
         List<String> ingridientsList = new ArrayList<>();
         for (Recipe.Ingredient i : ingredients) {
@@ -80,10 +87,20 @@ public class RecipeFragment extends Fragment implements StepAdapter.StepItemClic
 
     @Override
     public void onStepClick(int position) {
-        Intent stepIntent = new Intent(getActivity(), StepActivity.class);
-        //Passing the whole list of steps to support navigation
-        stepIntent.putParcelableArrayListExtra(StepActivity.STEP_LIST_EXTRA, (ArrayList<Recipe.Step>) mSteps);
-        stepIntent.putExtra(StepActivity.STEP_POSITION_EXTRA, position);
-        startActivity(stepIntent);
+
+        if (RecipeActivity.mTwoPane && mCallback != null) {
+            mCallback.onFragmentStepClicked(position);
+        } else {
+            Intent stepIntent = new Intent(getActivity(), StepActivity.class);
+            //Passing the whole list of steps to support navigation
+            stepIntent.putParcelableArrayListExtra(StepActivity.STEP_LIST_EXTRA, (ArrayList<Recipe.Step>) mSteps);
+            stepIntent.putExtra(StepActivity.STEP_POSITION_EXTRA, position);
+            startActivity(stepIntent);
+        }
+    }
+
+    //In two pane mode
+    public interface onFragmentStepClicked {
+        void onFragmentStepClicked(int position);
     }
 }
