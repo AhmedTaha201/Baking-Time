@@ -123,6 +123,7 @@ public class StepFragment extends Fragment {
         if (mediaSourceUri == null || TextUtils.isEmpty(mediaSourceUri.toString())) {
             return;
         }
+
         //Showing the Player view
         mPlayerView.setVisibility(View.VISIBLE);
         mPlayerEmptyView.setVisibility(View.GONE);
@@ -142,9 +143,12 @@ public class StepFragment extends Fragment {
             mPlayer.setPlayWhenReady(mSavedInstanceState.getBoolean(BUNDLE_KEY_PLAY_WHEN_READY));
             mPlayer.prepare(mediaSource);
             return;
+        } else {
+            mPlayer.seekTo(mMediaPosition);
+            mPlayer.setPlayWhenReady(mPlayWhenReady);
         }
+
         mPlayer.prepare(mediaSource);
-        mPlayer.setPlayWhenReady(true);
 
     }
 
