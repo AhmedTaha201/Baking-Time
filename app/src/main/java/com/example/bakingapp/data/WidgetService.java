@@ -57,9 +57,7 @@ public class WidgetService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int position) {
-            if (position >= getCount()) {
-                return getLoadingView();
-            }
+
 
             RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_list_item);
             List<String> ingredientList = new ArrayList<>(mRecipeIngredients);
@@ -71,7 +69,7 @@ public class WidgetService extends RemoteViewsService {
 
         @Override
         public RemoteViews getLoadingView() {
-            return new RemoteViews(mContext.getPackageName(), R.id.widget_list_empty_view);
+            return null;
         }
 
         @Override
